@@ -4,4 +4,4 @@
 - Perceptual evaluation of video and image quality (blurry, overexposure, color distortion)
 - Object detection (image) SIFT
 - Face and person detection
-- Primary color(R, G, B) histogram to detect changing scene
+- Primary color(R, G, B) histogram to detect changing scene transition
