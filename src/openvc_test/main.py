@@ -20,6 +20,8 @@ comparison_list_correl = []
 comparison_list_chi = []
 comparison_list_hell = []
 storage_reference = []
+data = {}
+data['cur'] = None
 
 def calc_histo(img):
     global init,fig,hist_plotted,h,previous_hist,current_hist,ax2,ax3,ax4
@@ -86,7 +88,7 @@ def calc_histo(img):
 
 
 def calculate_correlation(img):
-    global init, fig, hist_plotted, h, previous_hist, current_hist, ax2, ax3, ax4,a, prev_hist_added,frame_counter
+    global init, fig, hist_plotted, h, previous_hist, current_hist, ax2, ax3, ax4,a, prev_hist_added,frame_counter,data
     for channel, col in enumerate(color):
         current_hist[col] = cv2.calcHist([img], [channel], None, [256], [4, 256])
 
@@ -97,50 +99,63 @@ def calculate_correlation(img):
     else :
         a = cv2.compareHist(hist_added, prev_hist_added, cv2.HISTCMP_CORREL)
 
-    ## Of 1 color only
-    if a < 0.3:
-        storage_reference.append(frame_counter)
-        #print(str(frame_counter)+ " " + str(a))
+        ## Of 1 color only
+        if a < 0.3:
+            storage_reference.append(frame_counter)
+            #cv2.imwrite('./image/sc_detect/' + data['file'][:2] + "_" + str(frame_counter-1) + "_1" + ".jpg", data['prev'])
+            #cv2.imwrite('./image/sc_detect/' + data['file'][:2] + "_" + str(frame_counter) + "_2" + ".jpg", data['cur'])
+            #print(str(frame_counter)+ " " + str(a))
 
     prev_hist_added = hist_added.copy()
 
 
 def main():
-    global frame_counter,storage_reference
+    global frame_counter,storage_reference,data,init
     list_of_dir = listdir('./video')
     for f in list_of_dir:
         #clear
-        frame_counter=0
+        init = True
+        frame_counter = 1
         storage_reference = []
 
         vidcap = cv2.VideoCapture('./video/'+f)
 
-        count = 0
         success = 1
+        data['file'] = f;
+
+        # init
+        success, image = vidcap.read()
+        data['cur'] = image
+        calculate_correlation(image)
         while success:
-            frame_counter+=1
+            frame_counter += 1
             success, image = vidcap.read()
+            data['prev'] = data['cur']
+            data['cur'] = image
             if not success: break
             ####hist = calc_histo(image)
             calculate_correlation(image)
             #cv2.imshow('frame',image)
             # cv2.imwrite("frame%d.jpg" % count, image)     # save frame as JPEG file
+
             if cv2.waitKey(10) == 27:  # exit if Escape is hit
                 break
-            count += 1
 
             #cv2.destroyAllWindows()
 
         # post traitement
-        print("Total frame count  : " + str(frame_counter))
+        print("Total frame count  : " + str(frame_counter) + " Name : " + f)
         for i in storage_reference:
             to_print  = int(i*100/frame_counter)
+            image = im_ref()
             if to_print != 0:
                 print(to_print)
 
 if __name__ == "__main__":
     main()
 
+
+def im_ref() :
 
 
 # some ref :
