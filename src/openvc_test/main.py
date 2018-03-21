@@ -11,6 +11,7 @@ ax3 = None
 ax4 = None
 a = 0
 frame_counter = 0
+vidcap = None
 
 color = ('b', 'g', 'r')
 previous_hist = {}
@@ -108,9 +109,29 @@ def calculate_correlation(img):
 
     prev_hist_added = hist_added.copy()
 
+def im_ref(d) :
+    im_keys = []
+    for i in range(1,len(d)):
+        if(d[i]-(d[i-1])>10): # arbitrary diff to be sure is not a fading.
+            im_keys.append( int((d[i]-d[i-1])/2) + d[i-1] )
+    return im_keys
+
+def store_im_keys(frames):
+    tempvid = cv2.VideoCapture('./video/' + data['file'])
+
+    print("-----------------------------------" + str(frames))
+    for i in frames :
+        tempvid.set(cv2.CAP_PROP_POS_FRAMES,i) # 2 mean set frame
+        ret, im_to_store = tempvid.read()
+        if ret:
+            #cv2.imshow("test", im_to_store)
+            print("writing" + str(i))
+            cv2.imwrite('./image/sc_key/' + data['file'][:2] + "_frame" + str(i) + ".jpg", im_to_store)
+
+
 
 def main():
-    global frame_counter,storage_reference,data,init
+    global frame_counter,storage_reference,data,init,vidcap
     list_of_dir = listdir('./video')
     for f in list_of_dir:
         #clear
@@ -145,17 +166,15 @@ def main():
 
         # post traitement
         print("Total frame count  : " + str(frame_counter) + " Name : " + f)
+        im_keys = im_ref(storage_reference)
+        store_im_keys(im_keys)
         for i in storage_reference:
             to_print  = int(i*100/frame_counter)
-            image = im_ref()
             if to_print != 0:
                 print(to_print)
 
 if __name__ == "__main__":
     main()
-
-
-def im_ref() :
 
 
 # some ref :
