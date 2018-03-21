@@ -5,3 +5,6 @@
 - Object detection (image) SIFT
 - Face and person detection
 - Primary color(R, G, B) histogram to detect scene transition
+
+
+Blur detection OpenCV: https://www.pyimagesearch.com/2015/09/07/blur-detection-with-opencv/
