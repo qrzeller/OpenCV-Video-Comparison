@@ -2,23 +2,7 @@
 from pyimagesearch.searcher import Searcher
 from datetime import datetime
 import pickle
-import os
-import re
 import utils
-
-
-def get_filename_we_and_nf(path):
-    return (os.path.splitext(os.path.basename(path))[0]).split("_")[0]
-
-
-def get_filename_we_and_f(path):
-    return os.path.splitext(os.path.basename(path))[0]
-
-
-def get_brand(path):
-    r = re.compile("([0-9]+)([a-zA-Z]+)([0-9]+)")
-    m = r.match(path)
-    return m.group(2)
 
 
 def search_match(index_path, threshold=0.2):
@@ -30,7 +14,14 @@ def search_match(index_path, threshold=0.2):
 
     # loop over images in the index -- we will use each one as
     # a query image
+    max = len(index)
+    count  = 0
     for (query, queryFeatures) in index.items():
+
+        # Show progress
+        count = count + 1
+        print("[%s] progress image %s/%s" % (str(datetime.now().strftime("%d-%m-%Y %H:%M")), count, max))
+
 
         # Check if not black nor white image
         if not utils.remove_white_black_image(query):
@@ -42,10 +33,12 @@ def search_match(index_path, threshold=0.2):
             print("[%s] query: %s" % (str(datetime.now().strftime("%d-%m-%Y %H:%M")), query))
 
             # Get filename we (base file) and brand name
-            brand_base = get_filename_we_and_nf(query)
-            b1 = get_brand(brand_base)
+            brand_base = utils.get_filename_we_and_nf(query)
+            b1 = utils.get_brand(brand_base)
 
             # loop over the top ten results
+            error = False
+            match = 0
             for j in range(0, 10):
 
                 # grab the result (we are using row-major order) and
@@ -54,23 +47,29 @@ def search_match(index_path, threshold=0.2):
                 path = "%s" % (image_name)
 
                 # Get filename we (file which match with base file) and brand name
-                brand_compare = get_filename_we_and_nf(path)
-                b2 = get_brand(brand_compare)
+                brand_compare = utils.get_filename_we_and_nf(path)
+                b2 = utils.get_brand(brand_compare)
 
                 # Check if the first match found always match, even if the threshold (score) is
                 # higher than the base threshold.
                 # If we pass by this if => we cannot trust that the first match always match
                 if (j == 0) and (b1 != b2):
                     print("[%s] First match not always match !!!" % (str(datetime.now().strftime("%d-%m-%Y %H:%M"))))
+                    error = True
 
                 # Check if we don't compare with the same video
                 # Add threshold to avoid wrong match
                 if (brand_base != brand_compare) and score <= threshold:
+                    match = match + 1
 
                     # Check threshold => might need to adjust after the first pass
                     if b1 != b2:
                         print("[%s] Wrong base threshold: %s. Find wrong match with threshold (score): %s" % (str(datetime.now().strftime("%d-%m-%Y %H:%M")), threshold, score))
+                        error = True
 
-                    brand_and_f = get_filename_we_and_f(path)
+                # Display file if error
+                if error:
+                    brand_and_f = utils.get_filename_we_and_f(path)
                     print("[%s] %d. %s : %.3f" % (str(datetime.now().strftime("%d-%m-%Y %H:%M")), j + 1, brand_and_f, score))
+                    error = False
             print("\n")
