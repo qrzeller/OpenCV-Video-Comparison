@@ -1,8 +1,6 @@
 import os
 import json
 import re
-import matplotlib.pyplot as plt
-import networkx as nx
 from PIL import Image
 
 
@@ -42,6 +40,7 @@ def get_brand(path):
     m = r.match(path)
     return m.group(2)
 
+
 def create_dir(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -73,21 +72,12 @@ def get_video_brand(video_name):
     return m.group(2)#, m.group(2), m.group(3)
 
 
-def display_graph(result_json_file):
+def get_all_directories(directory):
+    return [d.path for d in os.scandir(directory) if d.is_dir()]
 
-    # Load result
-    with open(result_json_file) as js:
-        datas = json.load(js)
 
-    # Add data as edge
-    G = nx.Graph()
-    for k, v in datas.items():
-        for c in v:
-            G.add_edge(k, get_video_name(c))
-
-    # Plot the graph
-    nx.draw(G, with_labels=True, font_weight='bold')
-    plt.show()
+def get_all_files(directory):
+    return [f for f in os.scandir(directory) if f.is_file()]
 
 
 def sort_video_ba_brand(directory, result_json_file):
@@ -96,7 +86,6 @@ def sort_video_ba_brand(directory, result_json_file):
     for dir in files:
         dico_match.setdefault(get_video_brand(dir), []).append(dir)
     save_json_match(dico_match, result_json_file)
-    display_graph(result_json_file)
 
 
 def remove_white_black_image(path):
@@ -104,15 +93,3 @@ def remove_white_black_image(path):
     if sum(img.convert("L").getextrema()) in (0, 2):
         return True
     return False
-
-
-def gen_database_js(result_json_file, db_result_js_path):
-
-    # Load result
-    with open(result_json_file) as js:
-        datas = json.load(js)
-
-
-    for k, v in datas.items():
-        for file in v:
-            pass

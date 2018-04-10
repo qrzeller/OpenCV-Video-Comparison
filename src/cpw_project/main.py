@@ -1,6 +1,10 @@
 from datetime import datetime
-from matcher import face
+from matcher import ssim
 import scene
+import display
+import test
+import utils
+
 
 def main():
 
@@ -14,7 +18,7 @@ def main():
     faces_trainer_path = project_user_path + "datas\\detect\\trainer.yml"
     indexer_path = project_user_path + "datas\\index.pickle"
     result_json_path = project_user_path + "datas\\result.json"
-    db_result_js_path = project_user_path + "datas\\database.js"
+    result_js_db_path = project_user_path + "datas\\web\\dist\\database.js"
 
 
     # Time start
@@ -22,6 +26,25 @@ def main():
 
     # Struct => {'video_name': ['scene_image;method']}
     dico_match = {}
+
+    progress = 0
+    directories = utils.get_all_directories(scenes_path)
+    for d_base in directories:
+        files_base = utils.get_all_files(d_base)
+        for d_compare in directories:
+            files_compare = utils.get_all_files(d_compare)
+
+            # Check to not compare same directory
+            if d_base != d_compare:
+                for fb in files_base:
+                    for fc in files_compare:
+                        match = ssim.detect_match(fb.path, fc.path)
+                        if match:
+                            dico_match.setdefault(utils.get_video_name(fb.path), []).append(fc.path + ";ssim")
+                        progress = progress + 1
+                        print("[%s] Current process: %s/%s" % (str(datetime.now().strftime("%d-%m-%Y %H:%M")), str(progress), str(9928780)))
+        directories.remove(d_base)
+
 
     ### Scenes extraction
     print("[%s] extract_scenes: start" % str(datetime.now().strftime("%d-%m-%Y %H:%M")))

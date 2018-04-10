@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="netjsongraph.css" rel="stylesheet">
+        <!-- theme can be easily customized via css -->
+        <link href="netjsongraph-theme.css" rel="stylesheet">
+    </head>
+    <body>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+        <script src="netjsongraph.js"></script>
+		<script>
+			var force = d3.netJsonGraph("netjson.json", {
+				defaultStyle: true,
+				linkClassProperty: "type",
+				nodeClassProperty: "gateway",
+			});
+		</script>
+    </body>
+</html>
