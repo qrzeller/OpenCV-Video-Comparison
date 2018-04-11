@@ -1,3 +1,0 @@
-[distutils.setup_keywords]
-vcversioner = vcversioner:setup
-
