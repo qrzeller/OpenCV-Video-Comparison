@@ -25,7 +25,7 @@ def extract_scenes(videos_path, scenes_path, ffmpeg_path):
         utils.create_dir(os.path.join(scenes_path, filename))
 
         # Detect changing scene
-        args = " -i " + file + " -vf select='gt(scene\,0.4)',showinfo -vsync vfr " + scenes_path + filename + "\\" + filename + "_f%d.png"
+        args = " -i " + file + " -vf select='gt(scene\,0.4)',showinfo -vsync vfr " + scenes_path + filename + "\\" + filename + "_frame%d.png"
         path = ffmpeg_path + args
         ffmpeg_scene_detection(path)
 
