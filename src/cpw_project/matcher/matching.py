@@ -30,12 +30,12 @@ def matching(scenes_path, matcher_type, result_json_match_path, result_txt_match
                     if k_base != k_compare:
                         for i_base in v_base:
                             for i_compare in v_compare:
-                                if matcher_type is "orb":
+                                if matcher_type == "orb":
                                     match = orb.detect_match(i_base, i_compare)
                                     if len(match) > 0:
                                         G.add_edge(k_base, k_compare, weight=len(match))
                                         matches = matches + 1
-                                if matcher_type is "ssim":
+                                if matcher_type == "ssim":
                                     match, score = ssim.detect_match(i_base, i_compare)
                                     if match:
                                         G.add_edge(k_base, k_compare, weight=score)

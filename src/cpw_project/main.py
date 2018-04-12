@@ -39,16 +39,16 @@ def main():
     t0 = datetime.now()
 
     # Scenes extraction
-    print("[%s] extract_scenes: start" % str(datetime.now().strftime("%d-%m-%Y %H:%M:%S")))
-    scene.extract_scenes(videos_path, scenes_path, ffmpeg_path)
+    #print("[%s] extract_scenes: start" % str(datetime.now().strftime("%d-%m-%Y %H:%M:%S")))
+    #scene.extract_scenes(videos_path, scenes_path, ffmpeg_path)
 
     # Images matching
-    if (args.matching_type is "orb") or (args.matching_type is "ssim"):
+    if (args.matching_type == "orb") or (args.matching_type == "ssim"):
         print("[%s] matching %s: start" % (str(datetime.now().strftime("%d-%m-%Y %H:%M:%S")), args.matching_type))
         matching.matching(scenes_path, args.matching_type, result_json_match_path, result_txt_match_path)
 
     # Faces recognition matching
-    if args.matching_type is "face":
+    if args.matching_type == "face":
         confidence_threshold = 50
         scale_factor = 1.2
         min_neighbors = 5
@@ -56,7 +56,7 @@ def main():
         face.faces_recognition(scenes_path, faces_path, faces_cascade_path, faces_trainer_path, result_json_match_path, result_txt_match_path, confidence_threshold, scale_factor, min_neighbors)
 
     # Color histogram image matcher
-    if args.matching_type is "histo":
+    if args.matching_type == "histo":
         print("[%s] histo_color_matching: start" % str(datetime.now().strftime("%d-%m-%Y %H:%M:%S")))
         threshold = 0.2
         ihcolor.histo_matcher(scenes_path, indexer_path, result_json_match_path, result_txt_match_path,  threshold)
