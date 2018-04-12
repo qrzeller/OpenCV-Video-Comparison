@@ -9,9 +9,9 @@ import networkx as nx
 from networkx import readwrite
 
 
-def histo_matcher(scenes_path, indexer_path, result_match_path, threshold=0.19):
+def histo_matcher(scenes_path, indexer_path, result_json_match_path, result_txt_match_path, threshold=0.19):
     index_images(scenes_path, indexer_path)
-    search_match(indexer_path, result_match_path, threshold)
+    search_match(indexer_path, result_json_match_path, result_txt_match_path, threshold)
 
 
 def index_images(scenes_path, index_path):
@@ -50,7 +50,7 @@ def index_images(scenes_path, index_path):
     print("[%s] done...indexed %d images" % (str(datetime.now().strftime("%d-%m-%Y %H:%M")), len(index)))
 
 
-def search_match(indexer_path, result_match_path, threshold=0.15):
+def search_match(indexer_path, result_json_match_path, result_txt_match_path, threshold=0.15):
 
     # Graf to process match
     G = nx.MultiGraph()
@@ -96,5 +96,6 @@ def search_match(indexer_path, result_match_path, threshold=0.15):
                     print("match")
 
     # Save graph relation
-    with open(result_match_path, 'w') as f:
+    nx.write_edgelist(G, result_txt_match_path)
+    with open(result_json_match_path, 'w') as f:
         f.write(json.dumps(readwrite.json_graph.node_link_data(G)))

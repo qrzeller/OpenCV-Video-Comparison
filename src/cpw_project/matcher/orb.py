@@ -1,5 +1,6 @@
 import cv2
 
+
 def detect_match(base_image, compare_image):
 
     # Create ORB detector with 1000 keypoints with a scaling pyramid factor of 1.2

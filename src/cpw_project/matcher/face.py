@@ -6,7 +6,7 @@ import networkx as nx
 from networkx import readwrite
 
 
-def faces_recognition(scenes_path, faces_path, faces_cascade_path, faces_trainer_path, result_match_path, confidence_threshold, scale_factor, min_neighbors):
+def faces_recognition(scenes_path, faces_path, faces_cascade_path, faces_trainer_path, result_json_match_path, result_txt_match_path, confidence_threshold, scale_factor, min_neighbors):
 
     # Load image matrix from image path
     scenes_files, scenes_images = load_images(scenes_path)
@@ -15,7 +15,7 @@ def faces_recognition(scenes_path, faces_path, faces_cascade_path, faces_trainer
     faces_extraction(scenes_files, scenes_images, faces_cascade_path, faces_path, scale_factor, min_neighbors)
 
     # Train face extracted and match them with scene image
-    return train_and_match_faces(scenes_files, scenes_images, faces_cascade_path, faces_trainer_path, faces_path, result_match_path, confidence_threshold, scale_factor, min_neighbors)
+    return train_and_match_faces(scenes_files, scenes_images, faces_cascade_path, faces_trainer_path, faces_path, result_json_match_path, result_txt_match_path, confidence_threshold, scale_factor, min_neighbors)
 
 
 # Extract face from image
@@ -44,7 +44,7 @@ def faces_extraction(scenes_files, scenes_images, faces_cascade_path, faces_path
             cv2.imwrite(path, image_copy[y:y + h, x:x + w])
 
 
-def train_and_match_faces(scenes_files, scenes_images, faces_cascade_path, faces_trainer_path, faces_path, result_match_path, confidence_threshold=50, scale_factor=1.2, min_neighbors=5):
+def train_and_match_faces(scenes_files, scenes_images, faces_cascade_path, faces_trainer_path, faces_path, result_json_match_path, result_txt_match_path, confidence_threshold=50, scale_factor=1.2, min_neighbors=5):
 
     # Graf to process match
     G = nx.MultiGraph()
@@ -79,7 +79,8 @@ def train_and_match_faces(scenes_files, scenes_images, faces_cascade_path, faces
                         G.add_edge(base, compare, weight=conf)
 
     # Save graph relation
-    with open(result_match_path, 'w') as f:
+    nx.write_edgelist(G, result_txt_match_path)
+    with open(result_json_match_path, 'w') as f:
         f.write(json.dumps(readwrite.json_graph.node_link_data(G)))
 
 

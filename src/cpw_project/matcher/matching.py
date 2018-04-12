@@ -8,7 +8,7 @@ import cv2
 import json
 
 
-def matching(scenes_path, matcher_type, result_match_path):
+def matching(scenes_path, matcher_type, result_json_match_path, result_txt_match_path):
 
     # Graf to process match
     G = nx.MultiGraph()
@@ -42,10 +42,12 @@ def matching(scenes_path, matcher_type, result_match_path):
                                         matches = matches + 1
                                 progress = progress + 1
             print("[%s] Current process: %s/%s; Match on video: %s" % (str(datetime.now().strftime("%d-%m-%Y %H:%M:%S")), str(progress), str(maximum), str(matches)))
+            matches = 0
             removed.append(k_base)
 
     # Save graph relation
-    with open(result_match_path, 'w') as f:
+    nx.write_edgelist(G, result_txt_match_path)
+    with open(result_json_match_path, 'w') as f:
         f.write(json.dumps(readwrite.json_graph.node_link_data(G)))
 
 
