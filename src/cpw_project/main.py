@@ -39,8 +39,9 @@ def main():
     t0 = datetime.now()
 
     # Scenes extraction
-    #print("[%s] extract_scenes: start" % str(datetime.now().strftime("%d-%m-%Y %H:%M:%S")))
-    #scene.extract_scenes(videos_path, scenes_path, ffmpeg_path)
+    scene_threshold = 0.4
+    # print("[%s] extract_scenes: start" % str(datetime.now().strftime("%d-%m-%Y %H:%M:%S")))
+    scene.extract_scenes(videos_path, scenes_path, ffmpeg_path, scene_threshold)
 
     # Images matching
     if (args.matching_type == "orb") or (args.matching_type == "ssim"):
