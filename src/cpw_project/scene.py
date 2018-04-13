@@ -14,6 +14,12 @@ import os
 # values are typically between 0.3 and 0.5.
 def extract_scenes(videos_path, scenes_path, ffmpeg_path, scene_threshold):
 
+    # Create scenes path if not exists
+    utils.create_dir(scenes_path)
+
+    # Remove special char in video filename (ffmpeg => no such file or directory)
+    utils.remove_special_char(videos_path)
+
     # Get all video file recursive
     video_files = utils.get_files_rec(videos_path)
 
@@ -32,8 +38,7 @@ def extract(scenes_path, ffmpeg_path, scene_threshold, file):
     frame_file = os.path.join(directory, video_name + "_frame%d.png")
 
     # Detect changing scene
-    args = " -i " + file + " -vf select='gt(scene\," + str(scene_threshold) + ")',showinfo -vsync vfr " + frame_file
-    path = ffmpeg_path + args
+    path = ffmpeg_path + " -i " + file + " -vf select='gt(scene\," + str(scene_threshold) + ")',showinfo -vsync vfr " + frame_file
     ffmpeg_scene_detection(path)
 
     # Check if we have scene file extracted => otherwise extract with scene_threshold += 0.1
@@ -42,8 +47,9 @@ def extract(scenes_path, ffmpeg_path, scene_threshold, file):
         extract(scenes_path, ffmpeg_path, scene_threshold, file)
     else:
 
-        # Rename all scene file like => 0000x
+        # Rename all scene file like => frame_xxxxx
         rename_scene_files(scenes_path)
+
 
 # Given shell command, returns communication tuple of stdout and stderr
 def ffmpeg_scene_detection(cmd):
@@ -77,7 +83,7 @@ def get_value(value):
 
 def get_new_file_name(file):
     name, ext = utils.get_file(file)
-    new_file_name = name.split('_')[0] + "_f" + get_value(int(name.split("_")[1].replace("f", ""))) + ext
+    new_file_name = name.split('_')[0] + "_f" + get_value(int(name.split("_")[1].replace("frame", ""))) + ext
     return os.path.join(os.path.dirname(file), new_file_name)
 
 

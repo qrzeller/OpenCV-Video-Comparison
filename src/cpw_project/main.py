@@ -3,10 +3,15 @@ from matcher import matching
 from matcher import face
 from matcher import ihcolor
 import scene
+import utils
 import argparse
+import gui
 
 
 def main():
+
+    # Time start
+    t0 = datetime.now()
 
     # Parse user input
     # Matching type => "orb", "ssim", "face" or "histo"
@@ -17,14 +22,18 @@ def main():
     # Check matching type set
     m = ["face", "orb", "ssim", "histo"]
     if not [s for s in m if args.matching_type in s]:
-        print("Matching type must be: %s" % ('|'.join(m)))
+        print("Error: matching type must be: %s" % ('|'.join(m)))
+        return
+
+    # Check if whitespace in the user path => error ffmpeg
+    project_user_path = "C:\\Users\\Etienne\\Documents\\GitHub\\opencv_video-comparison\\src\\cpw_project\\"
+    if utils.check_space_in_string(project_user_path):
+        print("Error: whitespace in the user project path.")
         return
 
     # Paths directories
-    project_user_path = "C:\\Users\\Etienne\\Documents\\GitHub\\opencv_video-comparison\\src\\cpw_project\\"
     scenes_path = project_user_path + "datas\\scenes\\"
     faces_path = project_user_path + "datas\\faces\\"
-    frames_path = project_user_path + "datas\\frames\\"
     videos_path = project_user_path + "datas\\videos\\"
 
     # Paths files
@@ -34,9 +43,6 @@ def main():
     indexer_path = project_user_path + "datas\\index.pickle"
     result_json_match_path = project_user_path + "datas\\result_" + args.matching_type + ".json"
     result_txt_match_path = project_user_path + "datas\\result_" + args.matching_type + ".txt"
-
-    # Time start
-    t0 = datetime.now()
 
     # Scenes extraction
     scene_threshold = 0.4

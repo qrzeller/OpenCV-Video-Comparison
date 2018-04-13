@@ -46,6 +46,11 @@ def create_dir(directory):
         os.makedirs(directory)
 
 
+def check_dir_exists(directory):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+
 def get_files(directory):
     files = []
     for file in os.listdir(directory):
@@ -95,5 +100,11 @@ def file_exists_in_directory(path):
 def remove_white_black_image(path):
     img = Image.open(path)
     if sum(img.convert("L").getextrema()) in (0, 2):
+        return True
+    return False
+
+
+def check_space_in_string(text):
+    if re.search(r"\s", str(text)):
         return True
     return False
