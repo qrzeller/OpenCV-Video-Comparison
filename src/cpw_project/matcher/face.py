@@ -8,6 +8,9 @@ from networkx import readwrite
 
 def faces_recognition(scenes_path, faces_path, faces_cascade_path, faces_trainer_path, result_json_match_path, result_txt_match_path, confidence_threshold, scale_factor, min_neighbors):
 
+    # Create faces path if not exists
+    utils.create_dir(faces_path)
+
     # Load image matrix from image path
     scenes_files, scenes_images = load_images(scenes_path)
 

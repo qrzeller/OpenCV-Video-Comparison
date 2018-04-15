@@ -46,6 +46,11 @@ def create_dir(directory):
         os.makedirs(directory)
 
 
+def check_dir_exists(directory):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+
 def get_files(directory):
     files = []
     for file in os.listdir(directory):
@@ -88,8 +93,18 @@ def sort_video_ba_brand(directory, result_json_file):
     save_json_match(dico_match, result_json_file)
 
 
+def file_exists_in_directory(path):
+    return any(os.path.isfile(os.path.join(path, i)) for i in os.listdir(path))
+
+
 def remove_white_black_image(path):
     img = Image.open(path)
     if sum(img.convert("L").getextrema()) in (0, 2):
+        return True
+    return False
+
+
+def check_space_in_string(text):
+    if re.search(r"\s", str(text)):
         return True
     return False
