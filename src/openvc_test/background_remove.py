@@ -1,7 +1,9 @@
+import json
 from time import sleep
 
 import cv2
 from os import listdir
+from networkx.readwrite import json_graph
 
 
 # USAGE
@@ -15,9 +17,11 @@ import imutils
 import cv2
 import networkx as nx
 import matplotlib.pyplot as plt
+print(cv2.getBuildInformation())
 
 
 G = nx.MultiGraph()
+
 """
 def pyimage():
     # construct the argument parse and parse the arguments
@@ -83,7 +87,7 @@ def main():
     global images, images_name, G, GG
     list_of_dir = listdir(path)
     for f in list_of_dir:
-        im_ref = cv2.imread(path+f,0)
+        im_ref = cv2.imread(path+f)
         images_name.append(f)
         images.append(im_ref)
     print(list_of_dir)
@@ -96,7 +100,7 @@ def main():
 
             # compute the Structural Similarity Index (SSIM) between the two
             # images, ensuring that the difference image is returned
-            (score, diff) = compare_ssim(images[i], images[j], full=True)
+            (score, diff) = compare_ssim(images[i], images[j], full=True, multichannel=True)
             diff = (diff * 255).astype("uint8")
 
             if score > 0.8:
@@ -116,10 +120,21 @@ def main():
     nx.draw(G,pos, node_color='#A0CBE2', edgelist=edges, edge_color=weights,
         width=4, edge_cmap=plt.cm.Blues)
     labels = nx.get_edge_attributes(G, 'weight')
-    #n_label = nx.get_edge_attributes(G,'labels')
+
+    nx.write_edgelist(G, "test.hello.txt")
+
+
+    ##data = json_graph.node_link_data(G)
+    ##s = json.dumps(data)
+
+
+
+    # n_label = nx.get_edge_attributes(G,'labels')
     nx.draw_networkx_labels(G, pos, font_size=6)
     #nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
     plt.show()
+
+
 
 
 if __name__ == '__main__':

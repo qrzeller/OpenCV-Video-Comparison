@@ -1,7 +1,9 @@
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
+import os
 from os import listdir
+
 init = True
 fig = None
 hist_plotted = None
@@ -101,7 +103,7 @@ def calculate_correlation(img):
         a = cv2.compareHist(hist_added, prev_hist_added, cv2.HISTCMP_CORREL)
 
         ## Of 1 color only
-        if a < 0.3:
+        if a < 0.7:
             storage_reference.append(frame_counter)
             #cv2.imwrite('./image/sc_detect/' + data['file'][:2] + "_" + str(frame_counter-1) + "_1" + ".jpg", data['prev'])
             #cv2.imwrite('./image/sc_detect/' + data['file'][:2] + "_" + str(frame_counter) + "_2" + ".jpg", data['cur'])
@@ -116,7 +118,13 @@ def im_ref(d) :
             im_keys.append( int((d[i]-d[i-1])/2) + d[i-1] )
     return im_keys
 
+path_to_image_scene = './image/sc_temp/'
 def store_im_keys(frames):
+
+    path_folder_tocreate = os.path.join(path_to_image_scene, os.path.splitext(data['file'])[0])
+    print(path_folder_tocreate)
+    if not os.path.exists(path_folder_tocreate):
+        os.makedirs(path_folder_tocreate)
     tempvid = cv2.VideoCapture('./video/' + data['file'])
 
     print("-----------------------------------" + str(frames))
@@ -126,7 +134,7 @@ def store_im_keys(frames):
         if ret:
             #cv2.imshow("test", im_to_store)
             print("writing" + str(i))
-            cv2.imwrite('./image/sc_temp/' + data['file'][:2] + "_frame" + str(i) + ".jpg", im_to_store)
+            cv2.imwrite(os.path.join(path_folder_tocreate,  data['file'][:2] + "_frame" + str(i) + ".jpg"), im_to_store)
 
 
 
