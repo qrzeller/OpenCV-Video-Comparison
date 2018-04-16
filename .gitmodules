@@ -1,0 +1,3 @@
+[submodule "src/cpw_project/src/cpw_project/api/python-louvain"]
+	path = src/cpw_project/src/cpw_project/api/python-louvain
+	url = git@github.com:taynaud/python-louvain.git

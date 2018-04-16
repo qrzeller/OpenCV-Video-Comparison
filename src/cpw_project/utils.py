@@ -71,10 +71,10 @@ def save_json_match(dico_match, result_json_file):
         json.dump(dico_match, fp)
 
 
-def get_video_brand(video_name):
+def get_video_brand(video_name, group=2):
     r = re.compile("([0-9]+)([a-zA-Z]+)([0-9]+)")
     m = r.match(video_name)
-    return m.group(2)#, m.group(2), m.group(3)
+    return m.group(group)#, m.group(2), m.group(3)
 
 
 def get_all_directories(directory):
