@@ -9,7 +9,7 @@ def find_clusters(G):
     cliques = nx.algorithms.find_cliques(G)
 
     for i in cliques:
-        if len(i) > 2:
+        if len(i) >= 2:
             print(i)
 
 def connected_component(G):
@@ -23,7 +23,7 @@ def all_cliques(G):
 
 
 def community_by_louvain(G,with_labels):
-
+    plt.figure(figsize=(25, 12), dpi=150)
 
     partition = community.best_partition(G)
 
@@ -38,19 +38,19 @@ def community_by_louvain(G,with_labels):
         nx.draw_networkx_nodes(G, pos, list_nodes, node_size=60,
                                node_color=str(count / size),label=True)
 
-    nx.draw_networkx_edges(G, pos, alpha=0.5)
+    nx.draw_networkx_edges(G, pos, alpha=0.4)
     if with_labels:
         nx.draw_networkx_labels(G, pos)
     plt.show()
 
 def read_adj(with_labels=True, plot=True):
-    path = "../datas/result_ssim.txt"
+    path = "../datas/result_orb.txt"
 
 #    reparser.reparse_file(path)
 #    path = "../datas/video_graph/ssim_v.txt"
 
-    G = nx.MultiGraph()
-    G = nx.read_edgelist(path)
+    G = nx.read_edgelist(path,create_using=nx.MultiGraph())
+
 
     print("Finished reading graph: " + path.split("/")[2])
 
