@@ -7,10 +7,33 @@ from graph import reparser
 
 def find_clusters(G):
     cliques = nx.algorithms.find_cliques(G)
-
+    tot = 0
+    moyenne = 0
+    max_len = 0
     for i in cliques:
         if len(i) >= 2:
             print(i)
+            tot+=1
+        count = 0
+        for j in i:
+            count += 1
+        moyenne += count
+        if count > max_len:
+            max_len = count
+
+    print("Nombre de cliques" + str(tot))
+
+
+
+
+
+
+
+
+    print("taille moyenne des cliques : " + str(moyenne / tot))
+    print("longueur maximale d'une clique : " + str(max_len))
+
+    return cliques
 
 def connected_component(G):
     con_comp = nx.algorithms.connected_components(G)
@@ -65,7 +88,7 @@ def read_adj(with_labels=True, plot=True):
 
 
 
-    find_clusters(G)
+    cliques = find_clusters(G)
     #connected_component(G)
     community_by_louvain(G,with_labels)
 
@@ -89,4 +112,4 @@ def read_adj(with_labels=True, plot=True):
 
 
 
-read_adj(plot=False)
+read_adj(plot=False,with_labels=False)
